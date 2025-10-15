@@ -1,15 +1,24 @@
 { pkgs, ... }: {
+  # List of packages to be available in the environment
   packages = [
-   
+    pkgs.git      # Git version control system
+    pkgs.glibc    # GNU C Library, required by many binaries
+    pkgs.which    # 'which' command to locate executables
   ];
+ 
+  # Bootstrap script executed after the environment is built
   bootstrap = ''
-    mkdir -p "$WS_NAME"
-    mkdir "$WS_NAME/.idx/"
-    chmod -R +w "$WS_NAME"
-    cp ${./dev.nix} "$WS_NAME"/.idx/dev.nix
-    mv "$WS_NAME" "$out"
-    echo "flutter app $HOME/myapp"
-    mkdir -p "$out/.idx"
+    # Inform the user that the Flutter Firebase template setup is starting
+    echo "🔧 Initializing Flutter Firebase Template..."
+ 
+    # Create a new Flutter project in the output directory ($out)
+    flutter create "$out"
+ 
+    # Create a hidden folder '.idx' inside the project for custom indexing or metadata
+    mkdir "$out/.idx"
+    # Copy development environment configuration file into the '.idx' folder
+    cp ${./dev.nix} "$out/.idx/dev.nix"
+    # Ensure all files in the project directory are writable by the user
     chmod -R u+w "$out"
   '';
 }
